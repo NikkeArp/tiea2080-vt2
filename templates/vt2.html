@@ -37,12 +37,10 @@
     </form>
   </div>
 </div>
-<div id="board">
+<div id="board"> {% set blue = 0 %}{% set red = size %}  {# INITIALIZE VARIABLES #}
   <table>
-  {% set blue = 0 %}{% set red = size %}  {# INITIALIZE VARIABLES #}
   {% for i in range(0, size) %}           {# TABLE ROW LOOP #}
-    <tr>
-    {% for j in range(0, size) %}         {# TABLE CELL LOOP #}
+    <tr>{% for j in range(0, size) %}     {# TABLE CELL LOOP #}
       <td class="{% if j % 2 == 0 and not i % 2 == 0 %}dark{% elif i % 2 == 0 and not j % 2 == 0 %}dark{% else %}white{% endif %}">
       {% if cont and [j, i] in btns %}    {# CREATE CELL IF CONTINUE == TRUE AND CELL STILL EXIST IN BTNS-DATASTRUCT #}
         {% if j == blue and i == blue %}<a href="{{ lk_tool.crt_link(size, text, btns, (j, i)) }}"><img src="static/blue.svg" alt="blue ball"></a>{% endif %}
@@ -51,10 +49,9 @@
         {% if j == blue and i == blue %}<a href="{{ lk_tool.crt_link(size, text, btns, (j, i)) }}"><img src="static/blue.svg" alt="blue ball"></a>{% endif %}
         {% if j == red -1 and i == size - red%}<a href="{{ lk_tool.crt_link(size, text, btns, (j, i)) }}"><img src="static/red.svg" alt="red ball"></a>{% endif %}
       {% endif %}                         {# END CONTINUE AND [j,i] IN BTNS? #}
-      </td>
-    {% endfor %}    {# END CELL LOOP #}
+      </td>{% endfor %}    {# END CELL LOOP #}
     </tr>{% set blue = blue + 1 %} {% set red = red -1 %} {# UPDATE VARIABLES #}
-  {% endfor %}      {# END ROW LOOP #}
+  {% endfor %}            {# END ROW LOOP #}
   </table>
   {% if text %}<h3>{{ text }}</h3>{% endif %}
 </div>

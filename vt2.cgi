@@ -50,15 +50,20 @@ except:
     mde = u""
 
 class LinkTool:
+    """Specialized link creation-tool for this application."""
     def __init__(self):
         pass
 
     @staticmethod
     def crt_link(size, text, btns, xy=(-1,-1), mode=""):
-        result = "./vt2.cgi?%s&%s&%s&%s" % (urllib.urlencode({"xy": [xy[0], xy[1]]}),
-                                            urllib.urlencode({"x": size}),
-                                            urllib.urlencode({"teksti": text}),
-                                            urllib.urlencode({"btns": btns}))
+        try:
+            result = "./vt2.cgi?%s&%s&%s&%s" % (urllib.urlencode({"xy": [xy[0], xy[1]]}),
+                urllib.urlencode({"x": size}),
+                #urllib.urlencode({"teksti": urllib.quote_plus(text.encode("utf-8"))}),
+                "teksti=" + urllib.quote_plus(text.encode("utf-8")),
+                urllib.urlencode({"btns": btns}))
+        except:
+            result = u""
         try:
             if mode == u"move": result += u"&" + urllib.urlencode({"mode": u"move"}) 
             elif mode == u"rmv": result += u"&" + urllib.urlencode({"mode": u"rmv"}) 
@@ -66,6 +71,11 @@ class LinkTool:
         except:
             return result
 
-env = Environment(autoescape=True, loader=FileSystemLoader(tmpl_path), extensions=["jinja2.ext.autoescape"])
+env = Environment(autoescape=True, loader=FileSystemLoader(tmpl_path),
+                  extensions=["jinja2.ext.autoescape"])
+
 template = env.get_template('vt2.html')
-print template.render(btns=btns, size=size, text=text, urllib=urllib, cont=cont, removed=removed, lk_tool=LinkTool(), mde=mde).encode("utf-8")
+print template.render(btns=btns, size=size,
+                      text=text, urllib=urllib,
+                      cont=cont, removed=removed,
+                      lk_tool=LinkTool(), mde=mde).encode("utf-8")
