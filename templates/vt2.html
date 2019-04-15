@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Viikkotehtävä 2{% endblock title %}
+{% block content %}
+<div id="ctrl-panel">
+  <div id="modes">
+    <a href="{{ lk_tool.crt_link(size, text, btns, mode='move') }}">Siirto-tila</a>
+    <a href="{{ lk_tool.crt_link(size, text, btns, mode='rmv') }}">Poisto-tila</a>
+  </div>
+  <div id="settings">
+    <h1 id="header">Peli</h1>
+    <h4>Kerro luotavan pelialueen koko</h4>
+    <form action="vt2.cgi" method="get">
+      <fieldset>
+        <table class="form">
+          <tr>
+            <td>
+              <label>Koko </label>
+            </td>
+            <td>
+              <input type="text" name="x" />
+            </td>{% if size < 0 %}
+            <td>
+              <label class="error">Syöttämäsi arvo ei kelpaa</label>
+            </td>{% endif %}
+          </tr>
+          <tr>
+            <td>
+              <label>Teksti </label>
+            </td>
+            <td>
+              <input type="text" name="teksti" />
+            </td>
+          </tr>
+        </table>
+      </fieldset>
+      <input class="btn" type="submit" value="Luo" />
+    </form>
+  </div>
+</div>
+<div id="board">
+  {% if size > 0 %}
+  <table>
+    {% set blue = 0 %}{% set red = size %}  {# INITIALIZE VARIABLES #}
+    {% for i in range(0, size) %}           {# TABLE ROW LOOP #}
+    <tr>
+      {% for j in range(0, size) %}         {# SINGE TABLE CELL #}
+      <td
+        class="{% if j % 2 == 0 and not i % 2 == 0 %}dark{% elif i % 2 == 0 and not j % 2 == 0 %}dark{% else %}white{% endif %}">
+        {% if cont and [j, i] in btns %}  {# CREATE CELL IF IT STILL EXIST IN BTNS-DATASTRUCT #}
+          {% if j == blue and i == blue %}<a href="{{ lk_tool.crt_link(size, text, btns, (j, i)) }}"><img src="static/blue.svg" alt="blue ball"></a>{% endif %}
+          {% if j == red -1 and i == size - red%}<a href="{{ lk_tool.crt_link(size, text, btns, (j, i)) }}"><img src="static/red.svg" alt="red ball"></a>{% endif %}
+        {% elif not cont %}               {# CREATE NEW BOARD #}
+          {% if j == blue and i == blue %}<a href="{{ lk_tool.crt_link(size, text, btns, (j, i)) }}"><img src="static/blue.svg" alt="blue ball"></a>{% endif %}
+          {% if j == red -1 and i == size - red%}<a href="{{ lk_tool.crt_link(size, text, btns, (j, i)) }}"><img src="static/red.svg" alt="red ball"></a>{% endif %}
+        {% endif %}                       {# END CONTINUE AND [j,i] IN BTNS? #}
+      </td>
+      {% endfor %}  {# END CELL LOOP #}
+    </tr>
+      {% set blue = blue + 1 %} {% set red = red -1 %}
+    {% endfor %}    {# END ROW LOOP #}
+  {% endif %}       {# END SIZE > 0? #}
+  </table>
+  {% if text %}<h3>{{ text }}</h3>{% endif %}
+</div>
+{% endblock content %}
