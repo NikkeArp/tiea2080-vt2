@@ -34,8 +34,6 @@ try:
     except:
         pass
 except Exception as ex: #NEW GAME
-    print "#NEWGAME"
-    print ex.message
     cont = False
     btns = []
     blue = 0
